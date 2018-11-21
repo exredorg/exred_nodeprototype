@@ -232,13 +232,28 @@ defmodule Exred.NodePrototype do
   """
 
   @doc """
-  Initialize node.
+  node_init/1 initializes the node process.
   This is called as the last step of the node's init function.
   Needs to return a new state or a {state, timeout} tuple.
   (see GenServer documentation)
   """
   @callback node_init(state :: map) :: map | {map, integer}
+
+  @doc """
+  handle_msg/2 is called whenever the node receives a message from another node.
+  It should return an {outgoing_msg, new_state} tuple.
+  """
   @callback handle_msg(msg :: map, state :: map) :: {map | nil, map}
+
+  @doc """
+  fire/1 is called when the user clicks on the play button on a node in the UI (and with that triggers a 'fire' event).
+  It should return a new_state.
+
+  Since this has access to the node's state it can be used to implement user triggered actions like logging the state,
+  sending messages from the node or creating debug events that are displayed in the debug tab in the UI.
+
+  For an example of how to use it see the Trigger node.
+  """
   @callback fire(state :: map) :: map
 
   defmacro __using__(_opts) do
@@ -266,12 +281,6 @@ defmodule Exred.NodePrototype do
         }
       end
 
-      @doc """
-      node_init initializes the node process.
-      This is called as the last step of the node's init function.
-      Needs to return a new state or a {state, timeout} tuple.
-      (see GenServer documentation)
-      """
       def node_init(state), do: state
 
       def handle_msg(msg, state), do: {msg, state}
