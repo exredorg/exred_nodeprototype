@@ -232,6 +232,12 @@ defmodule Exred.NodePrototype do
   """
 
   @doc """
+  daemon_child_specs/1 needs to return a list of child specs.
+  These child processes will be started under the DaemonNodeSupervisor.
+  """
+  @callback daemon_child_specs(config :: map) :: list
+
+  @doc """
   node_init/1 initializes the node process.
   This is called as the last step of the node's init function.
   Needs to return a new state or a {state, timeout} tuple.
@@ -281,6 +287,8 @@ defmodule Exred.NodePrototype do
         }
       end
 
+      def daemon_child_specs(config), do: []
+
       def node_init(state), do: state
 
       def handle_msg(msg, state), do: {msg, state}
@@ -290,7 +298,7 @@ defmodule Exred.NodePrototype do
         state
       end
 
-      defoverridable node_init: 1, handle_msg: 2, fire: 1
+      defoverridable daemon_child_specs: 1, node_init: 1, handle_msg: 2, fire: 1
 
       use GenServer
 
@@ -316,7 +324,7 @@ defmodule Exred.NodePrototype do
       def get_category, do: @category
       def get_default_config, do: @config
 
-      # Callbacks
+      # GenServer Callbacks
 
       @impl true
       def init([node_id, node_config, send_event]) do

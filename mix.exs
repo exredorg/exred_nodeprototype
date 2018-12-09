@@ -2,11 +2,12 @@ defmodule Exred.NodePrototype.MixProject do
   use Mix.Project
 
   @description "Exred node prototype behaviour"
+  @version File.read!("VERSION") |> String.trim()
 
   def project do
     [
       app: :exred_nodeprototype,
-      version: "0.1.1",
+      version: @version,
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -31,7 +32,7 @@ defmodule Exred.NodePrototype.MixProject do
         "GitHub" => "https://github.com/exredorg/exred_nodeprototype.git",
         "Exred" => "http://exred.org"
       },
-      files: ["lib", "mix.exs", "README.md", "LICENSE"]
+      files: ["lib", "mix.exs", "README.md", "LICENSE", "VERSION"]
     }
   end
 end
